@@ -10,7 +10,8 @@ import (
 )
 
 func main() {
-	cloud := s3.NewS3ServiceImpl(storage.Config{CredentialsFile: ".env", BucketName: "kbtgbucket", SubDirectory: "", PermissionFileRoleAll: true})
+	cloud, _ := s3.NewS3ServiceWithConfig( s3.Config{Region: "", AccessKeyID: "", SecretAccessKey: "", Token: ""},
+	 									   storage.Config{CredentialsFile: "", BucketName: "", SubDirectory: "", PermissionFileRoleAll: true})
 	r := mux.NewRouter()
 	handler := storage.UploadFileHandler{CloudService: cloud, KeyFile: "file", LogError: nil}
 	r.HandleFunc("/upload", handler.UploadFile).Methods("POST")
