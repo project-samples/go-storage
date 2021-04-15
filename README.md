@@ -1,5 +1,2 @@
 # go-s3-sample
-# This sample uses there lib:
-	s3 "github.com/common-go/s3"
-	"github.com/common-go/storage"
-
+This sample uses 2 libraries: [common-go/storage](https://github.com/common-go/storage) [common-go/s3](https://github.com/common-go/s3)

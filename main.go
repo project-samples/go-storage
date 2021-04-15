@@ -1,23 +1,35 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	s3 "github.com/common-go/s3"
-	"github.com/common-go/storage"
-	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+
+	"github.com/common-go/config"
+	"github.com/gorilla/mux"
+
+	"go-service/internal/app"
 )
 
 func main() {
-	cloud, _ := s3.NewS3ServiceWithConfig( s3.Config{Region: "", AccessKeyID: "", SecretAccessKey: "", Token: ""},
-	 									   storage.Config{CredentialsFile: "", BucketName: "", SubDirectory: "", PermissionFileRoleAll: true})
+	var conf app.Root
+	er1 := config.Load(&conf, "configs/config")
+	if er1 != nil {
+		panic(er1)
+	}
+
 	r := mux.NewRouter()
-	handler := storage.UploadFileHandler{CloudService: cloud, KeyFile: "file", LogError: nil}
-	r.HandleFunc("/upload", handler.UploadFile).Methods("POST")
-	r.HandleFunc("/delete/{id}", handler.DeleteFile).Methods("DELETE")
-	http.Handle("/", r)
-	server := ":" + strconv.Itoa(8080)
-	fmt.Println(server + " started")
-	http.ListenAndServe(server, nil)
+
+	er2 := app.Route(r, context.Background(), conf)
+	if er2 != nil {
+		panic(er2)
+	}
+
+	fmt.Println("Start server")
+	server := ""
+	if conf.Server.Port > 0 {
+		server = ":" + strconv.Itoa(conf.Server.Port)
+	}
+	http.ListenAndServe(server, r)
 }
