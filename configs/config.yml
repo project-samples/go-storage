@@ -1,0 +1,22 @@
+server:
+  name: go-s3-sample
+  port: 8080
+
+log:
+  level: info
+  map:
+    time: "@timestamp"
+    msg: message
+
+aws:
+  region: abc
+  access_key_id: abc
+  secret_access_key: abc
+
+storage:
+  credentials_file: a
+  bucket_name: name
+  sub_directory: sub
+  all_users_reader: true
+
+key_file: file
