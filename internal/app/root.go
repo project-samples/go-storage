@@ -2,8 +2,8 @@ package app
 
 import (
 	"github.com/common-go/log"
-	"github.com/common-go/s3"
 	"github.com/common-go/storage"
+	"github.com/common-go/storage/s3"
 )
 
 type Root struct {

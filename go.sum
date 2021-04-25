@@ -32,10 +32,8 @@ github.com/common-go/config v0.0.9 h1:B8KIUD8T1SChNKWmhTWV3t9nsn7mO/fOKyRvQaq4Q6
 github.com/common-go/config v0.0.9/go.mod h1:q1FLnPrcmmHOyVSIGOhzR6YcwK63saWvww/tfXsu6q8=
 github.com/common-go/log v0.0.6 h1:3as6x1r5OYV/KMcknCIPJNzmuC2WE2XsbUWaZJEVoL4=
 github.com/common-go/log v0.0.6/go.mod h1:HSl/t/UyTyEfdQT5q5xu0KhM8i23+oNRCQu9HKR12EQ=
-github.com/common-go/s3 v0.0.0-20210414013800-b8de7002185c h1:xPWhMtqWXeOZ2oy+dSCCJo2PenSvnXn2jP+JeGldP1w=
-github.com/common-go/s3 v0.0.0-20210414013800-b8de7002185c/go.mod h1:VipsWTW2uXMeRu6qc4VXdqk285CuLEQNdfz14PEQLvA=
-github.com/common-go/storage v0.0.0-20210410094411-23f7204a1ff4 h1:bPRkvWEJM45WJUMveKsSLps/ukkt3ivCtZUy11NGaJQ=
-github.com/common-go/storage v0.0.0-20210410094411-23f7204a1ff4/go.mod h1:hN4GT8MqGuWgiXou2lrCLbGedmSJ4XkvPeHrIAPr9w4=
+github.com/common-go/storage v0.0.0-20210420063548-4b7c1a092448 h1:lYMzykt9cK8p5nhBOFflMbbDG5Lnh3vsGMoNvsrTCvg=
+github.com/common-go/storage v0.0.0-20210420063548-4b7c1a092448/go.mod h1:hN4GT8MqGuWgiXou2lrCLbGedmSJ4XkvPeHrIAPr9w4=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
