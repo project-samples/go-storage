@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/common-go/config"
+	"github.com/core-go/config"
 	"github.com/gorilla/mux"
 
 	"go-service/internal/app"

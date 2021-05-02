@@ -1,9 +1,9 @@
 package app
 
 import (
-	"github.com/common-go/log"
-	"github.com/common-go/storage"
-	"github.com/common-go/storage/s3"
+	"github.com/core-go/log"
+	"github.com/core-go/storage"
+	"github.com/core-go/storage/s3"
 )
 
 type Root struct {
