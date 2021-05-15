@@ -1,0 +1,76 @@
+{
+	"id": "733b8417-4b43-5655-b31c-9809a37fcd69",
+	"name": "s3",
+	"description": "",
+	"order": [
+		"0938a5b5-7bd3-47a9-b560-9b4b36f89f2d",
+		"503dc78b-e183-9305-2e1d-abba648f325b"
+	],
+	"folders": [],
+	"folders_order": [],
+	"timestamp": 1621120053372,
+	"owner": "918212",
+	"public": false,
+	"requests": [
+		{
+			"id": "0938a5b5-7bd3-47a9-b560-9b4b36f89f2d",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/upload",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [
+				{
+					"key": "file",
+					"value": "test.txt",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1621120302150,
+			"name": "uploadFile",
+			"description": "",
+			"collectionId": "733b8417-4b43-5655-b31c-9809a37fcd69",
+			"responses": []
+		},
+		{
+			"id": "503dc78b-e183-9305-2e1d-abba648f325b",
+			"headers": "",
+			"headerData": [],
+			"url": "http://localhost:8080/delete/test.txt",
+			"queryParams": [],
+			"preRequestScript": null,
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "DELETE",
+			"data": [
+				{
+					"key": "file",
+					"value": "test.txt",
+					"description": "",
+					"type": "file",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"version": 2,
+			"tests": null,
+			"currentHelper": "normal",
+			"helperAttributes": {},
+			"time": 1621120744542,
+			"name": "delFile",
+			"description": "",
+			"collectionId": "733b8417-4b43-5655-b31c-9809a37fcd69",
+			"responses": []
+		}
+	]
+}
