@@ -28,8 +28,10 @@ func main() {
 
 	fmt.Println("Start server")
 	server := ""
-	if conf.Server.Port > 0 {
-		server = ":" + strconv.Itoa(conf.Server.Port)
+	if conf.Server.Port != nil {
+		server = ":" + strconv.FormatInt(*conf.Server.Port, 10)
 	}
-	http.ListenAndServe(server, r)
+	if er3 := http.ListenAndServe(server, r); er3 != nil {
+		panic(er3)
+	}
 }

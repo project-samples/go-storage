@@ -7,14 +7,16 @@ import (
 )
 
 type Root struct {
-	Server  ServerConfig   `mapstructure:"server"`
-	Log     log.Config     `mapstructure:"log"`
-	AWS     s3.Config      `mapstructure:"aws"`
-	Storage storage.Config `mapstructure:"storage"`
-	KeyFile string         `mapstructure:"key_file"`
+	Server            ServerConfig   `mapstructure:"server"`
+	Log               log.Config     `mapstructure:"log"`
+	KeyFile           string         `mapstructure:"key_file"`
+	Storage           storage.Config `mapstructure:"storage"`
+	Provider          string         `mapstructure:"provider"`
+	GoogleCredentials string         `mapstructure:"google_credentials"`
+	AWS               s3.Config      `mapstructure:"aws"`
 }
 
 type ServerConfig struct {
 	Name string `mapstructure:"name"`
-	Port int    `mapstructure:"port"`
+	Port *int64 `mapstructure:"port"`
 }

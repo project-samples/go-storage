@@ -1,5 +1,5 @@
 server:
-  name: go-s3-sample
+  name: go-storage
   port: 8080
 
 log:
@@ -8,15 +8,16 @@ log:
     time: "@timestamp"
     msg: message
 
-aws:
-  region: abc
-  access_key_id: abc
-  secret_access_key: abc
+key_file: file
 
 storage:
-  credentials_file: a
   bucket_name: name
   sub_directory: sub
   all_users_reader: true
 
-key_file: file
+provider: aws
+google_credentials:
+aws:
+  region: abc
+  access_key_id: abc
+  secret_access_key: abc
