@@ -19,7 +19,7 @@ func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
 		return nil, err
 	}
 
-	fileHandler := storage.NewFileHandler(storageService, root.KeyFile, logError)
+	fileHandler := storage.NewFileHandler(storageService, root.Storage.Directory, root.KeyFile, logError)
 
 	return &ApplicationContext{FileHandler: fileHandler}, nil
 }

@@ -37,7 +37,7 @@
 			"currentHelper": "normal",
 			"helperAttributes": {},
 			"time": 1621120302150,
-			"name": "uploadFile",
+			"name": "upload file",
 			"description": "",
 			"collectionId": "733b8417-4b43-5655-b31c-9809a37fcd69",
 			"responses": []
@@ -67,7 +67,7 @@
 			"currentHelper": "normal",
 			"helperAttributes": {},
 			"time": 1621120744542,
-			"name": "delFile",
+			"name": "delete file",
 			"description": "",
 			"collectionId": "733b8417-4b43-5655-b31c-9809a37fcd69",
 			"responses": []
