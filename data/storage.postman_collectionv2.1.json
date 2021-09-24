@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "b9d8c5c6-2b64-47da-912b-d2ccec307cd3",
+		"name": "storage",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "upload file",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/Minh Tran/Downloads/office/sodo_kbtg.rtf"
+						},
+						{
+							"key": "Content-Type",
+							"value": "multipart/form-data;charset=UTF-8",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/upload",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete file",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "test.txt"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/delete/test.txt",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"delete",
+						"test.txt"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
