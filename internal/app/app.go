@@ -1,14 +1,15 @@
 package app
 
 import (
-	"awesomeProject/internal/handler"
-	"awesomeProject/internal/service"
-	"awesomeProject/pkg/drop_box"
-	"awesomeProject/pkg/google_drive"
-	"awesomeProject/pkg/one_drive"
 	"context"
 	"github.com/core-go/storage/google"
 	"github.com/core-go/storage/s3"
+
+	"go-service/internal/handler"
+	"go-service/internal/service"
+	"go-service/pkg/drop_box"
+	"go-service/pkg/google_drive"
+	"go-service/pkg/one_drive"
 )
 
 type ApplicationContext struct {

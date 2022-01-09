@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"awesomeProject/internal/service"
+	"go-service/internal/service"
 )
 
 const contentTypeHeader = "Content-Type"

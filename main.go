@@ -1,13 +1,14 @@
 package main
 
 import (
-	"awesomeProject/internal/app"
 	"context"
 	"fmt"
 	"github.com/core-go/config"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
+
+	"go-service/internal/app"
 )
 
 func main() () {
