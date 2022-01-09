@@ -16,8 +16,8 @@ func Route(r *mux.Router, ctx context.Context, conf Root) error {
 		return err
 	}
 
-	r.HandleFunc("/upload", app.FileHandler.UploadFile).Methods(POST)
-	r.HandleFunc("/delete/{id}", app.FileHandler.DeleteFile).Methods(DELETE)
+	r.HandleFunc("/upload", app.FileHandler.Upload).Methods(POST)
+	r.HandleFunc("/delete/{id}", app.FileHandler.Delete).Methods(DELETE)
 
 	return nil
 }
