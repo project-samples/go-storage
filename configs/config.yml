@@ -1,34 +1,53 @@
 server:
-  name: go-storage
+  name: go-cloud-service
   port: 8080
-
-log:
-  level: info
-  map:
-    time: "@timestamp"
-    msg: message
 
 key_file: file
 
-storage:
+provider: google-drive
+#google-storage, google-drive, drop-box, one-drive
+
+google_storage:
   bucket: go-firestore-rest-api.appspot.com
   directory: sub
   public: true
 
-provider: google
+general_directory: golang-cloud-service
+dropbox_token: J9uXB2sKcCsAAAAAAAAAATsNbQ1_HAdEqGtFPJEQJhD4_ePSL2Qh0lWheE50wzNb
+# read README.md to know how to get drop_box token
+one_drive_token: EwBwA8l6BAAUwihrrCrmQ4wuIJX5mbj7rQla6TUAAV0Pn0fppoXZvQ0AmN1gcXH4B%2bk5ySIFErV2n8/oUwlEYM6CWm4ZXiMjQchdDM7Jj56VjM5lHADrp0VoaNdenQXIcmYF7YpRjxyHDIVbUaLG3OvlY6JcSvbQzbH/9e9nroDcOko%2baK0jw7CwkJ6AoStSXHLmBNz8svYc%2bs5p6zYaeGvPdzKt2lxSODkDikthuxGS4yqp6a%2bxuX4hm6rwm79yZTHV%2b7WOIoNmmn%2bOjKGmATB5yaghBwkX6PQZqxVEAEIfxrLIa%2bYEA86fgxO4pKZ%2bMkL7My0ahKnskR28z7JyYrNhiQkpIAwMYT/%2bnobm28u7R4gQtulquGzc%2bUZGdTwDZgAACJt%2bwhD7xVydQAL3Ioq6sJglniPbRli23Q2/vAT29UwD7jlpw3CsphW8p5OgCNYnZel8kaDinMqdLNM2XE0LAb7GTqQ0NevWYQTmcHS9tTQHn/4UeJTvFUxaJMl6ssIco3fAXqV4KezCAHmOVIzhfYKDNUxy5UWuM6DSjCkKtweKpRzO6qLpoJZSCSMkJIMgg78Q/740i8EHOYf2XI0J9XIQznEQTwYrnDxpyUKdhEVI4eW/R8OzR/QmVnOpwXzED2Zqa2H1WGZAy93y1EYekVb9gL5mEu91hZTPOkYy7joViUtMRKvjGEmzIj1jDrQtMLRKCIMg5XFos/qY%2bhsH43J7LBDdB/7w7u4Uh4V17D5MXwsPLlrbJrTw1FdqGbLKrMN%2bdG04x%2bUIiMuePobw2jF7D6AQ5ney72PDap6Utb0eIxOGzdKrUxbKO3hXqXyXKpm2lQ%2biAq4VDPoCqoRBnTOM3ipXoj7FC3rFlalR7o0Hgxc51%2bXR3tmfE44ID7exXyD%2bq%2bUolTyzD%2bH7pGPPj2cxEx2qWJ/vBllDUOgwELyxbbZfUoklPhByVTLuSwWT/m/lDlqZz6NGC9YImrB9Ma340dgrny6rjl5IZwpKbqkFkF%2bhcj%2b1s4YUDgco0Ij1aB%2bUXZGQrLWsE1sCA1K5hDI4vpaKq20DNddaHg%2b5iqXrYeIdtTnFwqu5D4gShstx9whUiFhP/V05xbXbMpk7AY0X8EWlRUoDiEcH3SZKJItnYQ80xS1Khu2ch3Gj1omG2LDvmRIvC01HTFGFAg%3d%3d
+# read README.md to know how to get one drive access token
+
 google_credentials: '
   {
     "type": "service_account",
-    "project_id": "go-firestore-rest-api",
-    "private_key_id": "0227f21f734620a0a04a3882249f3b1cb1ab634a",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCrzi/hC6NsGZyR\nc2rurmpACAn5FggHjrUshXCqbsoQUPvrMhTEPQk56hQdHNlMl+ZNue94Cv7D3LCR\nlHu68XOsPAhnx21LHPsMplIobjnXWn+fD+Ow6zvHp9RalS40PrVYS1uuIVYjeets\n8dtdFB3G9ka7Zv8oz4WBN4S18sXsV702OaBMo2IwfArTk2DCY6KYqcNEVde0sd/q\nH6pK1GvDPkgbtcklk5fUgkNz61nufnqYujsnx57GuDT9ZbreAcYTB5/hRcgMjyM6\n8tgYXdjmJLFdTsMABT/YsQ0OmDDwhVQrc0CixZtzMXg+jLRxKZuHELQ+nkJCKJBi\nTtQJ1f+dAgMBAAECggEACdL2+uvi8uX+BXUvmqlfivzKsTMYz3HSG1MgD6bZKBix\nZxAMjvIcinK/prCFHnObKDunHVqnmcSPVivC7XwsDJ+8LU8CiWaFVoJWNVikNxPG\nM27BqtawquiGZI2eQD+LuBpLCkh+t/WbSDYGQKrLTxq7DbFEiu1e6XYmwQ66UZrU\ny1U7YuRw2ML+6BiHaSdq3FH3wvBbsAfwZoNnqdqTjaj01EkNsi/lOmFXHY8gPOA1\nGRI20R4KhRkctIC4ZztXg50bRzuIkz+YX57F36kEqpLaXePUQ/pHWg+76rsCd2dD\nIrcQF8Y+Hbp4eP+7CBu3AUltOzuNeC6h69B8MKCrowKBgQDTCrzCD0SThL+6NcPR\njzwFydDbapfgzGYvleEOEUTy2akAdydrcAHlMDcuUZv7xyjam5CVS/B4vLRynl6J\n8KHkdAuU8ZLESdnfo2X9GgJWBw/RK6spebEcslWINVJWwWWsQrtjMr58WVS4hWAE\nxBIKumhf5/EICZW+BueT3j0WtwKBgQDQZ6tFc3OGE0YFVIQkalQd751dsgtjQhVZ\n4huwzaUZdtFlNJm1B6yVn9ksGAM2q0iCxDQBPOM7AF+nEpeBz+pMmdpWiOb6sKC6\nVoqIgts7lNMp2h4kJLUePgWVarbuACS1VX3qSpqdcklaAi+5WnObzC8bsmaLbZxp\nmpk4gvpoSwKBgEjoj7d3MNjJ5ra89k6CblkNlNMIqzmlQ7Qy0lJa0vgXDBS2FW8/\nfdgg5R9iYEIGVu3XCocZehUsFCb44W5ELJnRIWMuZebcIKHrQEPFZYM041j+/h3R\nBcgFMBljWnPQUoDFeRlXIYmyDtvEcByVZCpCpeZkKdf9/7ZrijuCbpZXAoGARY4k\nEoTqzJfIKeVASSsXsfoUCn5u4IzgtWQKm+K2tJ38WwvINSw/hJyaDeZhxDA8fjBf\nrv4UVM/WHNvOpyuuZix/O5xrgsXKjwZtLAyIgQU1yOUcZDHAJTzL/kdkkGCJ39+N\nq9GEcwH+y0SpivJOXXQzUMolAWnu5ywK8Vp9mqsCgYBaCkZuQ3xMkWPSYWwJ2mpq\nBrH0Zpk3ddDGo63w97C9z7zX6tIP1uxVvKVGA3LQPaj8Zvbuks8DYWV8a/6RGIP/\nTH5On0uX/VNkI1Wk9R3tstyzz7MRaBAHQOt26/le/XOptcJXWB29uKEJPpq/sfHb\nx66rIAZO4BgLcslDTj3Y2g==\n-----END PRIVATE KEY-----\n",
-    "client_email": "go-firestore-rest-api@appspot.gserviceaccount.com",
-    "client_id": "106958727954036268529",
+    "project_id": "crypto-airlock-335904",
+    "private_key_id": "fd64e528691d731eac8d1a71add6e0333357c46a",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDuHvh3e/iGPFw+\nEmoBBcHxzQ8Dx7xfeoHrvYogeh1seJ91ZLBPA3+9XRobEJ9LSeVrTQqhsyLfjeQn\nmeJN/fO6Qp8GrG8c1ZiyeY4uusRN5DSRIzubFPXp2FkJjTL0WbzJfqriu9C4JyCn\nAn/LvZiD5/shgw+gbpdlsq5d9xn0EkqMWqGem7i2ujeYOcf8FGM9I65vfXe0v9p7\nGAq6xLkUnTl3pwb9iLzrTW8vqXWAAwGvzV5mkUwqh9Y8dccEEe4C26PlQm/TBhqa\na1a4JdioJiN2mkxw6Y4I8NVOIKliAra997TpywqRnXN+Jn05uO+Kf7MUoZ5q6Jad\nisAu8s9bAgMBAAECggEAJQVpUZZTdiH7S2aXLC/beT8NjGO+N0VM3rxvYGDr+ISB\nHNd54TGk52mKrgDga0GtarMl1IG33x7ohSRT1Bayu9eGHEZXLhn4AsOK+1vr5O+h\nIUbjilcba+8dhLJ7D2obmQ4u/k+qAdTfgD0PZmXvSOQac27fe+zFxWN0NZq94mgK\nzobzfgCT01UY8JHvCmuBmFuoHPwrvxtv/PKzGasbKNW3cu5hJTFD2xRpYe/gBtg7\nCbmzEoDXUMn9c7SM7s1/NcUY0WKTCqgM0YipxqAdZS2chnM3PAXsWXb3n9B0FnT7\na7/ETZ7ybt9rz46aCVS38SSLl//cEK+b9Tl8Rqe6PQKBgQD96etyXZzUxlEDsYqp\nRn6eigcAsVe4GQXk5J5g/WJJgZ5eXQGraGgLbKsnZf2f8SukK0DicnwXBqfjWveM\nm174j5bfhph8/ZiKHyOes6umDCbJN5BJ6Ge6ZPYKrgO4xW+w0eQGC1ln+ZXxiG9s\nfsUgRaue0QfNnx8hJx/akYssVQKBgQDwE9UcZQ96HsbAgvitnTI1ArWOEtxjB36J\ndlTyPH5iDv9eNJMj8Sha7EaSaov244ar/NGspO34tBqeB5yFWwQnOEbENx22a3Dz\n4ZjMAV1XZ9FDtTP3vYdmNEnBm2IqR4APrFKG7orkeseJFmEi7j8Y7xDFNlHE0q3m\n2sisyZ687wKBgQDgRmDoGJWxPyZJ6+T9Vb37jRFYZEyF2Nxi7CiUpNrO8IWQ9ffG\njibwiGC5IRYf0yboECh0nAjNUdyzLiNf99CwHix2bW19YYX94jlVMYAY37zWmJSD\nI5uTgR/uGPxClWntNceCKz4iX8s4l3lLzMGTmtZXJm0NC1K0ttkk9s+GLQKBgHTh\nEuWKBejsRtK+cJcFasYIFZ+faxADPAVsSJrN/LF8n7KbYe8jnwP0976chJuj1ZKx\nuNqWSQzFkhfRmNALqY/2g+1O7/Y5hHoXIK5hE7JT5rtR4oUADoUhe674GOiAesYm\nnN74D0KAy9ffv1akKq/W45E/iruJ3gQAC6ajWdadAoGAbelcfMUes++cglpLn1/M\ngxRdR5bootb6hA3DoEJ9ESptVcydMweSnJNqKLS2gJdYilOLH8i4GCic2ArKEEPa\nnrN60T1/Miy0mO0dF43V6OKo29UMkE8ZeA4sSfCo4oP5Oo1yzkAWDBx68WvhgJPA\nG9Vrvf+AqbHdbDU4XlB2amY=\n-----END PRIVATE KEY-----\n",
+    "client_email": "go-storage-upload@crypto-airlock-335904.iam.gserviceaccount.com",
+    "client_id": "110819004498077867505",
     "auth_uri": "https://accounts.google.com/o/oauth2/auth",
     "token_uri": "https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/go-firestore-rest-api%40appspot.gserviceaccount.com"
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/go-storage-upload%40crypto-airlock-335904.iam.gserviceaccount.com"
   }'
+
+google_drive_credentials: '
+{
+  "installed": {
+    "client_id": "708448127214-ebmqoe7eehc31t4ivlsa075n158c3hqd.apps.googleusercontent.com",
+    "project_id": "golang-upload-http",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [
+      "urn:ietf:wg:oauth:2.0:oob",
+      "http://localhost"
+    ]
+  }
+}'
+
 aws:
   region: abc
   access_key_id: abc

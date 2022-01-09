@@ -1,18 +1,16 @@
 package main
 
 import (
+	"awesomeProject/internal/app"
 	"context"
 	"fmt"
-	"net/http"
-	"strconv"
-
 	"github.com/core-go/config"
 	"github.com/gorilla/mux"
-
-	"go-service/internal/app"
+	"net/http"
+	"strconv"
 )
 
-func main() {
+func main() () {
 	var conf app.Root
 	er1 := config.Load(&conf, "configs/config")
 	if er1 != nil {
