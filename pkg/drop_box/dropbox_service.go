@@ -9,17 +9,22 @@ import (
 )
 
 type DropboxService struct {
-	Token	string
-	Client	files.Client
+	Token  string
+	Client files.Client
+	Id     bool
 }
 
-func NewDropboxService(token string) (*DropboxService, error) {
+func NewDropboxService(token string, options...bool) (*DropboxService, error) {
 	config := dropbox.Config{
 		Token: token,
 	}
 	client := files.New(config)
 
-	return &DropboxService{Token: token, Client: client}, nil
+	id := false
+	if len(options) > 0 {
+		id = options[0]
+	}
+	return &DropboxService{Token: token, Client: client, Id: id}, nil
 }
 
 func (d DropboxService) Upload(ctx context.Context, directory string, filename string, data []byte, contentType string) (string, error) {
@@ -28,41 +33,49 @@ func (d DropboxService) Upload(ctx context.Context, directory string, filename s
 	// create new client to access drop_box cloud with token generated in drop_box console
 	client := d.Client
 	if client == nil {
-		config := dropbox.Config{
-			Token: d.Token,
-		}
+		config := dropbox.Config{Token: d.Token}
 		client = files.New(config)
 	}
 
 	// create new upload info
-	filepath := fmt.Sprintf("/%s/%s", directory, filename)
+	var filepath string
+	if len(directory) > 0 {
+		filepath = fmt.Sprintf("/%s/%s", directory, filename)
+	} else {
+		filepath = "/" + filename
+	}
+
 	arg := files.NewCommitInfo(filepath)
 
 	// upload file
-	_, err := client.Upload(arg, file)
+	res, err := client.Upload(arg, file)
 	if err != nil {
-		panic(err)
+		return "", nil
 	}
-
-	msg := fmt.Sprintf("uploaded file '%s' to dropbox successfully!!!", filename)
-	return msg, err
+	// msg := fmt.Sprintf("uploaded file '%s' to dropbox successfully!!!", filename)
+	if d.Id {
+		return res.Id, nil
+	} else {
+		return res.PathLower + "/" + res.Name, nil
+	}
 }
 
-func (d DropboxService)  Delete(ctx context.Context, directory string, fileName string) (bool, error) {
+func (d DropboxService) Delete(ctx context.Context, directory string, filename string) (bool, error) {
 	client := d.Client
 	if client == nil {
-		config := dropbox.Config{
-			Token: d.Token,
-		}
+		config := dropbox.Config{Token: d.Token}
 		client = files.New(config)
 	}
-
-	filepath := fmt.Sprintf("/%s/%s", directory, fileName)
+	var filepath string
+	if len(directory) > 0 {
+		filepath = fmt.Sprintf("/%s/%s", directory, filename)
+	} else {
+		filepath = "/" + filename
+	}
 	arg := files.NewDeleteArg(filepath)
 	_, err := client.DeleteV2(arg)
 	if err != nil {
 		return false, err
 	}
-
 	return true, nil
 }

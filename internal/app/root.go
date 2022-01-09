@@ -1,23 +1,24 @@
 package app
 
 import (
-	"context"
-	"github.com/gorilla/mux"
+	"github.com/core-go/storage"
+	"github.com/core-go/storage/s3"
 )
 
-const (
-	POST   = "POST"
-	DELETE = "DELETE"
-)
+type Root struct {
+	Server            	ServerConfig   `mapstructure:"server"`
+	AWS                 s3.Config      `mapstructure:"aws"`
+	KeyFile           	string         `mapstructure:"key_file"`
+	Storage             storage.Config `mapstructure:"google_storage"`
+	Provider          	string         `mapstructure:"provider"`
+	DropboxToken		string		   `mapstructure:"dropbox_token"`
+	OneDriveToken		string		   `mapstructure:"one_drive_token"`
+	GeneralDirectory	string		   `mapstructure:"general_directory"`
+	GoogleCredentials	string         `mapstructure:"google_credentials"`
+	GoogleDriveCredentials	string     `mapstructure:"google_drive_credentials"`
+}
 
-func Route(r *mux.Router, ctx context.Context, conf Root) error {
-	app, err := NewApp(ctx, conf)
-	if err != nil {
-		return err
-	}
-
-	r.HandleFunc("/upload", app.FileHandler.UploadFile).Methods(POST)
-	r.HandleFunc("/delete/{id}", app.FileHandler.DeleteFile).Methods(DELETE)
-
-	return nil
+type ServerConfig struct {
+	Name 			  			string 		   `mapstructure:"name"`
+	Port 			  			*int64 		   `mapstructure:"port"`
 }

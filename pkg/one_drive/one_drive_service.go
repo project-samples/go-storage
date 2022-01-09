@@ -10,18 +10,23 @@ import (
 )
 
 type OneDriveService struct {
-	AccessToken	string
-	Client *onedrive.Client
+	AccessToken string
+	Client      *onedrive.Client
+	Id          bool
 }
 
-func NewOneDriveService(ctx context.Context, token string) (*OneDriveService, error) {
+func NewOneDriveService(ctx context.Context, token string, options...bool) (*OneDriveService, error) {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	client := onedrive.NewClient(tc)
 
-	return &OneDriveService{AccessToken: token, Client: client}, nil
+	id := false
+	if len(options) > 0 {
+		id = options[0]
+	}
+	return &OneDriveService{AccessToken: token, Client: client, Id: id}, nil
 }
 
 func (o OneDriveService) Upload(ctx context.Context, directory string, filename string, data []byte, contentType string) (string, error) {
@@ -40,7 +45,7 @@ func (o OneDriveService) Upload(ctx context.Context, directory string, filename 
 	isExists, err := exists(uploadFolder)
 	if isExists == false {
 		err = os.Mkdir(uploadFolder, 0755)
-		if err!= nil {
+		if err != nil {
 			panic(err)
 		}
 	}
@@ -60,11 +65,13 @@ func (o OneDriveService) Upload(ctx context.Context, directory string, filename 
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println(item.Id)
-
-	msg := fmt.Sprintf("uploaded file '%s' to one-drive successfully!!!", filename)
-	return msg, nil
+	// fmt.Println(item.Id)
+	// msg := fmt.Sprintf("uploaded file '%s' to one-drive successfully!!!", filename)
+	if o.Id {
+		return item.Id, nil
+	} else {
+		return item.WebURL, nil
+	}
 }
 
 func (o OneDriveService) Delete(ctx context.Context, directory string, fileName string) (bool, error) {
@@ -77,34 +84,44 @@ func (o OneDriveService) Delete(ctx context.Context, directory string, fileName 
 		client = onedrive.NewClient(tc)
 	}
 
-	list,_ := client.DriveItems.List(ctx, "root")
-	var fileId string
-	for i := 0; i < len(list.DriveItems); i++ {
-		if list.DriveItems[i].Name == fileName {
-			fileId = list.DriveItems[i].Id
+	if o.Id {
+		err := client.DriveItems.Delete(ctx, "", fileName)
+		if err != nil {
+			return false, err
 		}
-	}
-
-	driveResp, _ := client.Drives.List(ctx)
-	var driveId string
-	for i := 0; i < len(driveResp.Drives); i++ {
-		if driveResp.Drives[i].DriveType == "personal" {
-			driveId = driveResp.Drives[i].Id
+		return true, nil
+	} else {
+		list, _ := client.DriveItems.List(ctx, "root")
+		fileId := ""
+		for i := 0; i < len(list.DriveItems); i++ {
+			if list.DriveItems[i].Name == fileName {
+				fileId = list.DriveItems[i].Id
+			}
 		}
-	}
-	log.Print(driveId)
+		driveResp, _ := client.Drives.List(ctx)
+		var driveId string
+		for i := 0; i < len(driveResp.Drives); i++ {
+			if driveResp.Drives[i].DriveType == "personal" {
+				driveId = driveResp.Drives[i].Id
+			}
+		}
+		log.Print(driveId)
+		err := client.DriveItems.Delete(ctx, "", fileId)
+		if err != nil {
+			return false, err
+		}
 
-	err := client.DriveItems.Delete(ctx, "", fileId)
-	if err != nil {
-		return false, err
+		return true, err
 	}
-
-	return true, err
 }
 
 func exists(path string) (bool, error) {
 	_, err := os.Stat(path)
-	if err == nil { return true, nil }
-	if os.IsNotExist(err) { return false, nil }
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
 	return false, err
 }
