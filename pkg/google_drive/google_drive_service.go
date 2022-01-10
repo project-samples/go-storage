@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type GoogleDriveService struct {
@@ -60,7 +61,7 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	// check duplicate file
 	queryFile := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", filename)
 	listFile, _ := s.Service.Files.List().Q(queryFile).Do()
-	if listFile != nil {
+	if len(listFile.Files) > 0 {
 		fileId := listFile.Files[0].Id
 		err := s.Service.Files.Delete(fileId).Do()
 		if err != nil {
@@ -87,7 +88,8 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 
 func (s GoogleDriveService) Delete(ctx context.Context, directory string, fileName string) (bool, error) {
 	// get the fileId of the file that need to be deleted
-	if s.Type == "Id" {
+	checkExtension := strings.Index(fileName, ".")
+	if s.Type == "Id" && checkExtension < 0 {
 		err := s.Service.Files.Delete(fileName).Do()
 		if err != nil {
 			return false, err
