@@ -1,14 +1,13 @@
 package app
 
 import (
-	"awesomeProject/internal/handler"
-	"awesomeProject/internal/service"
-	"awesomeProject/pkg/drop_box"
-	"awesomeProject/pkg/google_drive"
-	"awesomeProject/pkg/one_drive"
 	"context"
-	"github.com/core-go/storage/google"
-	"github.com/core-go/storage/s3"
+
+	"go-service/internal/handler"
+	"go-service/internal/service"
+	"go-service/pkg/drop_box"
+	"go-service/pkg/google_drive"
+	"go-service/pkg/one_drive"
 )
 
 type ApplicationContext struct {
@@ -28,14 +27,14 @@ func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
 
 func CreateCloudService(ctx context.Context, root Root) (service.CloudService, error) {
 	if root.Provider == "google-drive" {
-		return google_drive.NewGoogleDriveService(ctx, []byte(root.GoogleDriveCredentials))
-	} else if root.Provider == "google-storage" {
-		return google.NewGoogleStorageServiceWithCredentials(ctx, []byte(root.GoogleCredentials), root.Storage)
+		return google_drive.NewGoogleDriveService([]byte(root.GoogleDriveCredentials))
 	} else if root.Provider == "drop-box" {
 		return drop_box.NewDropboxService(root.DropboxToken)
-	} else if root.Provider == "one-drive" {
+	} else { //if root.Provider == "one-drive" {
 		return one_drive.NewOneDriveService(ctx, root.OneDriveToken)
+	} /* else if root.Provider == "google-storage" {
+		return google.NewGoogleStorageServiceWithCredentials(ctx, []byte(root.GoogleCredentials), root.Storage)
 	} else {
 		return s3.NewS3ServiceWithConfig(root.AWS, root.Storage)
-	}
+	} */
 }

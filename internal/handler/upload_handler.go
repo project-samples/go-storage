@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"awesomeProject/internal/service"
+	"go-service/internal/service"
 )
 
 const contentTypeHeader = "Content-Type"
@@ -84,7 +84,7 @@ func (f FileHandler) DeleteFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filename = r.RequestURI[i+1:]
-
+/*
 	var directory string
 	if f.Provider == "google-storage" {
 		directory = f.Directory
@@ -92,8 +92,8 @@ func (f FileHandler) DeleteFile(w http.ResponseWriter, r *http.Request) {
 		// google-drive or drop_box
 		directory = f.GeneralDirectory
 	}
-
-	rs, err := f.Service.Delete(r.Context(), directory, filename)
+*/
+	rs, err := f.Service.Delete(r.Context(), filename)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

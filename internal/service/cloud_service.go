@@ -6,5 +6,5 @@ import (
 
 type CloudService interface {
 	Upload(ctx context.Context, directory string, filename string, data []byte, contentType string) (string, error)
-	Delete(ctx context.Context, directory string, fileName string) (bool, error)
+	Delete(ctx context.Context, fileName string) (bool, error)
 }

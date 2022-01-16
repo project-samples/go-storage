@@ -16,24 +16,28 @@ import (
 
 type GoogleDriveService struct {
 	Service *drive.Service
+	Id      bool
 }
 
-func NewGoogleDriveService(ctx context.Context, credentials []byte) (*GoogleDriveService, error) {
+func NewGoogleDriveService(credentials []byte, options ...bool) (*GoogleDriveService, error) {
 	// create a config struct based on Google Drive credentials string in config
 	config, err := google.ConfigFromJSON(credentials, drive.DriveFileScope)
 	if err != nil {
 		return nil, err
 	}
 
-	client := getClient(config)
+	client := GetClient(config)
 
 	service, err := drive.New(client)
 	if err != nil {
 		fmt.Printf("Cannot create the Google Drive service: %v\n", err)
 		return nil, err
 	}
-
-	return &GoogleDriveService{Service: service}, err
+	id := true
+	if len(options) > 0 {
+		id = options[0]
+	}
+	return &GoogleDriveService{Service: service, Id: id}, err
 }
 
 func (s GoogleDriveService) Upload(ctx context.Context, directory string, filename string, data []byte, contentType string) (string, error) {
@@ -47,7 +51,7 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	if listFolder != nil && len(listFolder.Files) > 0 {
 		folderId = listFolder.Files[0].Id
 	} else {
-		folder, err1 := createDirectory(s.Service, directory, "root")
+		folder, err1 := CreateDirectory(s.Service, directory, "root")
 		if err1 != nil {
 			return "could not create directory!!!", err1
 		}
@@ -66,7 +70,7 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	}
 
 	// create the file and upload its content
-	fileResp, err := createFile(s.Service, filename, contentType, file, folderId)
+	fileResp, err := CreateFile(s.Service, filename, contentType, file, folderId)
 	if err != nil {
 		msg := fmt.Sprintf("Could not create file: %v\n", err)
 		return msg, err
@@ -82,36 +86,46 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	// create permission for file
 	_, err = s.Service.Permissions.Create(fileId, permissionToBeCreated).Do() // create permission for file
 	if err != nil {
-		panic(err)
+		return fileId, err
 	}
-	//get webViewLink
-	fileRespShare, err := s.Service.Files.Get(fileId).Fields("webViewLink").Do() //get webViewLink
-	if err != nil {
-		panic(err)
+	if s.Id {
+		return fileResp.Id, nil
+	} else {
+		//get webViewLink
+		fileRespShare, err := s.Service.Files.Get(fileId).Fields("webViewLink").Do() //get webViewLink
+		if err != nil {
+			return "", err
+		}
+		return fileRespShare.WebViewLink, nil
 	}
-
-	msg := fmt.Sprintf("file '%s' uploaded in google drive successfully!!! follow this link to view file in google drive: %s", filename, fileRespShare.WebViewLink)
-	return msg, nil
 }
 
-func (s GoogleDriveService) Delete(ctx context.Context, directory string, fileName string) (bool, error) {
-	// get the fileId of the file that need to be deleted
-	q := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", fileName)
-	list, err := s.Service.Files.List().Q(q).Do()
-	if list == nil || err != nil {
-		return false, err
-	}
-	fileId := list.Files[0].Id
+func (s GoogleDriveService) Delete(ctx context.Context, fileId string) (bool, error) {
+	if s.Id {
+		err := s.Service.Files.Delete(fileId).Do()
+		if err != nil {
+			return false, err
+		} else {
+			return true, err
+		}
+	} else {
+		// get the fileId of the file that need to be deleted
+		q := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", fileId)
+		list, err := s.Service.Files.List().Q(q).Do()
+		if list == nil || err != nil {
+			return false, err
+		}
+		fileId := list.Files[0].Id
 
-	err = s.Service.Files.Delete(fileId).Do()
-	if err != nil {
-		return false, err
+		err = s.Service.Files.Delete(fileId).Do()
+		if err != nil {
+			return false, err
+		}
+		return true, err
 	}
-
-	return true, err
 }
 
-func createDirectory(service *drive.Service, name string, parentId string) (*drive.File, error) {
+func CreateDirectory(service *drive.Service, name string, parentId string) (*drive.File, error) {
 	// common parentId is "root"
 	d := &drive.File{
 		Name:     name,
@@ -129,7 +143,7 @@ func createDirectory(service *drive.Service, name string, parentId string) (*dri
 	return file, nil
 }
 
-func createFile(service *drive.Service, name string, mimeType string, content io.Reader, parentId string) (*drive.File, error) {
+func CreateFile(service *drive.Service, name string, mimeType string, content io.Reader, parentId string) (*drive.File, error) {
 	f := &drive.File{
 		MimeType: mimeType,
 		Name:     name,
@@ -146,23 +160,23 @@ func createFile(service *drive.Service, name string, mimeType string, content io
 }
 
 // getClient Retrieve a token, saves the token, then returns the generated client.
-func getClient(config *oauth2.Config) *http.Client {
+func GetClient(config *oauth2.Config) *http.Client {
 	// The file token.json stores the user's access and refresh tokens, and is
 	// created automatically when the authorization flow completes for the first
 	// time.
 	tokFile := "token.json"
-	tok, err := tokenFromFile(tokFile)
+	tok, err := TokenFromFile(tokFile)
 
 	// token file not exists, get token from web based on config, then save token info in the new token file
 	if err != nil {
-		tok = getTokenFromWeb(config)
-		saveToken(tokFile, tok)
+		tok = GetTokenFromWeb(config)
+		SaveToken(tokFile, tok)
 	}
 	return config.Client(context.Background(), tok)
 }
 
 // getTokenFromWeb Request a token from the web, then returns the retrieved token.
-func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
+func GetTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 	fmt.Printf("Go to the following link in your browser then type the "+
 		"authorization code: \n%v\n", authURL)
@@ -180,7 +194,7 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 }
 
 // tokenFromFile get token from a local file.
-func tokenFromFile(file string) (*oauth2.Token, error) {
+func TokenFromFile(file string) (*oauth2.Token, error) {
 	f, err := os.Open(file)
 	if err != nil {
 		return nil, err
@@ -192,7 +206,7 @@ func tokenFromFile(file string) (*oauth2.Token, error) {
 }
 
 // saveToken Saves a token to a new created file
-func saveToken(path string, token *oauth2.Token) {
+func SaveToken(path string, token *oauth2.Token) {
 	fmt.Printf("Saving credential file to: %s\n", path)
 	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0600)
 	if err != nil {
@@ -201,4 +215,3 @@ func saveToken(path string, token *oauth2.Token) {
 	defer f.Close()
 	json.NewEncoder(f).Encode(token)
 }
-
