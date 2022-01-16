@@ -1,15 +1,14 @@
 package app
 
 import (
+	"awesomeProject/internal/handler"
+	"awesomeProject/internal/service"
+	"awesomeProject/pkg/drop_box"
+	"awesomeProject/pkg/google_drive"
+	"awesomeProject/pkg/one_drive"
 	"context"
-	"github.com/core-go/storage"
 	"github.com/core-go/storage/google"
 	"github.com/core-go/storage/s3"
-
-	"go-service/internal/handler"
-	"go-service/pkg/drop_box"
-	"go-service/pkg/google_drive"
-	"go-service/pkg/one_drive"
 )
 
 type ApplicationContext struct {
@@ -17,17 +16,17 @@ type ApplicationContext struct {
 }
 
 func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
-	storageService, err := CreateCloudService(ctx, root)
+	cloudService, err := CreateCloudService(ctx, root)
 	if err != nil {
 		return nil, err
 	}
 
-	fileHandler := handler.NewFileHandler(storageService, root.Provider, root.GeneralDirectory, root.KeyFile, root.Storage.Directory)
+	fileHandler := handler.NewFileHandler(cloudService, root.Provider, root.GeneralDirectory, root.KeyFile, root.Storage.Directory)
 
 	return &ApplicationContext{FileHandler: fileHandler}, nil
 }
 
-func CreateCloudService(ctx context.Context, root Root) (storage.StorageService, error) {
+func CreateCloudService(ctx context.Context, root Root) (service.CloudService, error) {
 	if root.Provider == "google-drive" {
 		return google_drive.NewGoogleDriveService(ctx, []byte(root.GoogleDriveCredentials))
 	} else if root.Provider == "google-storage" {

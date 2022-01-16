@@ -9,24 +9,24 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/core-go/storage"
+	"awesomeProject/internal/service"
 )
 
 const contentTypeHeader = "Content-Type"
 
 type FileHandler struct {
-	Service	storage.StorageService
+	Service	service.CloudService
 	Provider string
 	GeneralDirectory string
 	Directory string
 	KeyFile	string
 }
 
-func NewFileHandler(service storage.StorageService, provider string, generalDirectory string, keyFile string, directory string) *FileHandler {
+func NewFileHandler(service service.CloudService, provider string, generalDirectory string, keyFile string, directory string) *FileHandler {
 	return &FileHandler{Service: service, Provider: provider, GeneralDirectory: generalDirectory, KeyFile: keyFile, Directory: directory}
 }
 
-func (f FileHandler) Upload(w http.ResponseWriter, r *http.Request) {
+func (f FileHandler) UploadFile(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		http.Error(w, "not available", http.StatusInternalServerError)
@@ -76,7 +76,7 @@ func (f FileHandler) Upload(w http.ResponseWriter, r *http.Request) {
 	respond(w, http.StatusOK, rs)
 }
 
-func (f FileHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (f FileHandler) DeleteFile(w http.ResponseWriter, r *http.Request) {
 	i := strings.LastIndex(r.RequestURI, "/")
 	filename := ""
 	if i <= 0 {

@@ -12,15 +12,13 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 )
 
 type GoogleDriveService struct {
 	Service *drive.Service
-	Type    string
 }
 
-func NewGoogleDriveService(ctx context.Context, credentials []byte, options ...string) (*GoogleDriveService, error) {
+func NewGoogleDriveService(ctx context.Context, credentials []byte) (*GoogleDriveService, error) {
 	// create a config struct based on Google Drive credentials string in config
 	config, err := google.ConfigFromJSON(credentials, drive.DriveFileScope)
 	if err != nil {
@@ -34,21 +32,19 @@ func NewGoogleDriveService(ctx context.Context, credentials []byte, options ...s
 		fmt.Printf("Cannot create the Google Drive service: %v\n", err)
 		return nil, err
 	}
-	t := "Id"
-	if len(options) > 0 {
-		t = options[0]
-	}
-	return &GoogleDriveService{Service: service, Type: t}, err
+
+	return &GoogleDriveService{Service: service}, err
 }
 
 func (s GoogleDriveService) Upload(ctx context.Context, directory string, filename string, data []byte, contentType string) (string, error) {
 	file := bytes.NewReader(data)
+	var fileId string
+	var folderId string
 
-	// check duplicate folder
+	//check duplicate folder
 	queryFolder := fmt.Sprintf("name = '%s' and mimeType = 'application/vnd.google-apps.folder' and trashed = false", directory)
 	listFolder, _ := s.Service.Files.List().Q(queryFolder).Do()
-	var folderId string
-	if len(listFolder.Files) > 0 {
+	if listFolder != nil && len(listFolder.Files) > 0 {
 		folderId = listFolder.Files[0].Id
 	} else {
 		folder, err1 := createDirectory(s.Service, directory, "root")
@@ -61,8 +57,8 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	// check duplicate file
 	queryFile := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", filename)
 	listFile, _ := s.Service.Files.List().Q(queryFile).Do()
-	if len(listFile.Files) > 0 {
-		fileId := listFile.Files[0].Id
+	if listFile != nil && len(listFile.Files) > 0 {
+		fileId = listFile.Files[0].Id
 		err := s.Service.Files.Delete(fileId).Do()
 		if err != nil {
 			return "could not delete duplicate file", err
@@ -70,46 +66,49 @@ func (s GoogleDriveService) Upload(ctx context.Context, directory string, filena
 	}
 
 	// create the file and upload its content
-	res, err := createFile(s.Service, filename, contentType, file, folderId)
+	fileResp, err := createFile(s.Service, filename, contentType, file, folderId)
 	if err != nil {
 		msg := fmt.Sprintf("Could not create file: %v\n", err)
 		return msg, err
 	}
-	// msg := fmt.Sprintf("file '%s' uploaded in google drive successfully!!!", filename)
+	fileId = fileResp.Id
 
-	if s.Type == "WebContentLink" {
-		return res.WebContentLink, nil
-	} else if s.Type == "WebViewLink" {
-		return res.WebViewLink, nil
-	} else {
-		return res.Id, nil
+	// 		create share link for file
+	// create permission type
+	permissionToBeCreated := &drive.Permission{
+		Type: "anyone",
+		Role: "reader",
 	}
+	// create permission for file
+	_, err = s.Service.Permissions.Create(fileId, permissionToBeCreated).Do() // create permission for file
+	if err != nil {
+		panic(err)
+	}
+	//get webViewLink
+	fileRespShare, err := s.Service.Files.Get(fileId).Fields("webViewLink").Do() //get webViewLink
+	if err != nil {
+		panic(err)
+	}
+
+	msg := fmt.Sprintf("file '%s' uploaded in google drive successfully!!! follow this link to view file in google drive: %s", filename, fileRespShare.WebViewLink)
+	return msg, nil
 }
 
 func (s GoogleDriveService) Delete(ctx context.Context, directory string, fileName string) (bool, error) {
 	// get the fileId of the file that need to be deleted
-	checkExtension := strings.Index(fileName, ".")
-	if s.Type == "Id" && checkExtension < 0 {
-		err := s.Service.Files.Delete(fileName).Do()
-		if err != nil {
-			return false, err
-		} else {
-			return true, err
-		}
-	} else {
-		q := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", fileName)
-		list, err := s.Service.Files.List().Q(q).Do()
-		if list == nil || err != nil {
-			return false, err
-		}
-		fileId := list.Files[0].Id
-
-		err = s.Service.Files.Delete(fileId).Do()
-		if err != nil {
-			return false, err
-		}
-		return true, err
+	q := fmt.Sprintf("name = '%s' and mimeType != 'application/vnd.google-apps.folder' and trashed = false", fileName)
+	list, err := s.Service.Files.List().Q(q).Do()
+	if list == nil || err != nil {
+		return false, err
 	}
+	fileId := list.Files[0].Id
+
+	err = s.Service.Files.Delete(fileId).Do()
+	if err != nil {
+		return false, err
+	}
+
+	return true, err
 }
 
 func createDirectory(service *drive.Service, name string, parentId string) (*drive.File, error) {
@@ -202,3 +201,4 @@ func saveToken(path string, token *oauth2.Token) {
 	defer f.Close()
 	json.NewEncoder(f).Encode(token)
 }
+
