@@ -4,25 +4,24 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/core-go/storage"
 	"io"
 	"net/http"
 	"path/filepath"
 	"strings"
-
-	"go-service/internal/service"
 )
 
 const contentTypeHeader = "Content-Type"
 
 type FileHandler struct {
-	Service	service.CloudService
+	Service	storage.StorageService
 	Provider string
 	GeneralDirectory string
 	Directory string
 	KeyFile	string
 }
 
-func NewFileHandler(service service.CloudService, provider string, generalDirectory string, keyFile string, directory string) *FileHandler {
+func NewFileHandler(service storage.StorageService, provider string, generalDirectory string, keyFile string, directory string) *FileHandler {
 	return &FileHandler{Service: service, Provider: provider, GeneralDirectory: generalDirectory, KeyFile: keyFile, Directory: directory}
 }
 

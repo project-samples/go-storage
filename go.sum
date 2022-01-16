@@ -77,8 +77,8 @@ github.com/cncf/udpa/go v0.0.0-20201120205902-5459f2c99403/go.mod h1:WmhPx2Nbnht
 github.com/cncf/xds/go v0.0.0-20210312221358-fbca930ec8ed/go.mod h1:eXthEFrGJvWHgFFCl3hGmgk+/aYT6PnTQLykKQRLhEs=
 github.com/core-go/config v0.1.0 h1:PT9t/UrhNFo5tB0s45Ed99R6Lx3ibRwA2SdjNjbRCA0=
 github.com/core-go/config v0.1.0/go.mod h1:Pqxosu8ryByLKWyV6tDiwY+JAJc+YSlFy6MzQRFDO+g=
-github.com/core-go/storage v0.0.4 h1:HUSNDqAe+0c2BlMmA6NHYp21skRhZIN8aNxj/Ww0mdw=
-github.com/core-go/storage v0.0.4/go.mod h1:qYNGprAjsaRKAM7x2RMip3cptzr10XFllCdW0Xy1/3k=
+github.com/core-go/storage v0.0.8 h1:JdXbeN1+X8s4IBhmGgc/r8I0bC/DYQcRspyEL+97JV0=
+github.com/core-go/storage v0.0.8/go.mod h1:qYNGprAjsaRKAM7x2RMip3cptzr10XFllCdW0Xy1/3k=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
 github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
