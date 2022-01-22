@@ -83,16 +83,15 @@ func (f FileHandler) DeleteFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filename = r.RequestURI[i+1:]
-/*
-	var directory string
-	if f.Provider == "google-storage" {
-		directory = f.Directory
+
+	var filepath string
+	if f.Provider == "drop-box" {
+		filepath = fmt.Sprintf("/%s/%s", f.GeneralDirectory, filename)
 	} else {
-		// google-drive or drop_box
-		directory = f.GeneralDirectory
+		filepath = filename
 	}
-*/
-	rs, err := f.Service.Delete(r.Context(), filename)
+
+	rs, err := f.Service.Delete(r.Context(), filepath)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

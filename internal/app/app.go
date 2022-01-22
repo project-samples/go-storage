@@ -29,11 +29,11 @@ func NewApp(ctx context.Context, root Root) (*ApplicationContext, error) {
 
 func CreateCloudService(ctx context.Context, root Root) (storage.StorageService, error) {
 	if root.Provider == "google-drive" {
-		return google_drive.NewGoogleDriveService([]byte(root.GoogleDriveCredentials))
+		return google_drive.NewGoogleDriveService([]byte(root.GoogleDriveCredentials), false)
 	} else if root.Provider == "drop-box" {
 		return drop_box.NewDropboxService(root.DropboxToken)
 	} else if root.Provider == "one-drive" {
-		return one_drive.NewOneDriveService(ctx, root.OneDriveToken)
+		return one_drive.NewOneDriveService(ctx, root.OneDriveToken, false)
 	} else if root.Provider == "google-storage" {
 		return google.NewGoogleStorageServiceWithCredentials(ctx, []byte(root.GoogleCredentials), root.Storage)
 	} else {
